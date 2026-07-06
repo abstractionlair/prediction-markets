@@ -1,0 +1,11 @@
+[Unit]
+Description=Kalshi trades sync — live trades ingestion via data system framework
+After=network-online.target postgresql.service
+
+[Service]
+Type=oneshot
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets
+EnvironmentFile=/etc/prediction-markets/kalshi-sync.env
+ExecStart=/usr/bin/python3 -m collectors.kalshi.trades sync --qps 25
+TimeoutStartSec=3600

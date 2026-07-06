@@ -1,0 +1,14 @@
+[Unit]
+Description=Kalshi Settled Markets Downloader
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets/collectors
+Environment=HOME=/opt/prediction-markets
+ExecStart=/opt/prediction-markets/venv/bin/python3 settled_downloader.py
+TimeoutStartSec=3600
+MemoryHigh=256M
+MemoryMax=384M

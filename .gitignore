@@ -1,0 +1,17 @@
+venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# Trading state and logs (machine-specific, contain live order IDs)
+trading/logs/state.json
+trading/logs/state-dry-run.json
+trading/logs/trades.jsonl
+trading/logs/trades-dry-run.jsonl
+
+# Working files (ephemeral analysis)
+work/
+
+# delegation scaffolding (not part of the repo)
+.workflow/

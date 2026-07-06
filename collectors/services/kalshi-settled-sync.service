@@ -1,0 +1,16 @@
+[Unit]
+Description=Kalshi settled sync — download settlement outcomes (data system)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets
+EnvironmentFile=/etc/prediction-markets/kalshi-sync.env
+ExecStart=/usr/bin/python3 -u -m collectors.kalshi.settled sync
+MemoryHigh=512M
+MemoryMax=768M
+
+[Install]
+WantedBy=multi-user.target

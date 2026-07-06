@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prediction-markets"
+version = "0.1.0"
+description = "Prediction market data infrastructure and research"
+requires-python = ">=3.11"
+dependencies = [
+    "psycopg2-binary>=2.9.0",
+    "requests>=2.31.0",
+    "cryptography>=41.0.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "ruff>=0.1.0",
+]
+
+[tool.setuptools]
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "db: tests requiring database access (may be slow)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = [
+    "trading/test_balance_escrow.py",
+    "trading/series_edge.py",
+    "trading/series_edge_snapshots.py",
+]
+
+[tool.ruff.lint]
+# E402: imports after sys.path manipulation in conftest (structural)
+# E731: lambda in calibration.py report() (readability preference)
+ignore = ["E402", "E731"]

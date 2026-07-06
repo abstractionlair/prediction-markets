@@ -1,0 +1,14 @@
+[Unit]
+Description=CBOE SPX Options Chain Collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets/collectors
+Environment=HOME=/opt/prediction-markets
+ExecStart=/opt/prediction-markets/venv/bin/python3 -u cboe_collector.py --verbose
+TimeoutStartSec=120
+MemoryHigh=128M
+MemoryMax=256M

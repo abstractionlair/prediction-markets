@@ -1,0 +1,14 @@
+[Unit]
+Description=Prediction Markets Weekly Data Pipeline
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets/collectors
+Environment=HOME=/opt/prediction-markets
+ExecStart=/opt/prediction-markets/venv/bin/python3 weekly_pipeline.py --skip-scout
+TimeoutStartSec=7200
+MemoryHigh=256M
+MemoryMax=384M

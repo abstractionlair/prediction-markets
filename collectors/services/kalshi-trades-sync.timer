@@ -1,0 +1,9 @@
+[Unit]
+Description=Kalshi trades sync timer — daily live trade ingestion
+
+[Timer]
+OnCalendar=*-*-* 06:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

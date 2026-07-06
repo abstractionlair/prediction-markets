@@ -1,0 +1,13 @@
+[Unit]
+Description=Daily prediction-markets DB retention sweep
+Requires=prediction-markets-retention.service
+
+[Timer]
+# Run daily at 07:30 UTC — after the 06:00 kalshi-trades-sync but before
+# the 08:00 weekly-pipeline (Sunday only).
+OnCalendar=*-*-* 07:30:00
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

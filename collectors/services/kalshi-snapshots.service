@@ -1,0 +1,20 @@
+[Unit]
+Description=Kalshi snapshots — continuous orderbook collection (data system)
+After=network-online.target postgresql.service
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets
+EnvironmentFile=/etc/prediction-markets/kalshi-sync.env
+ExecStart=/usr/bin/python3 -u -m collectors.kalshi.snapshots run --qps 10
+Restart=on-failure
+RestartSec=30
+MemoryHigh=400M
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

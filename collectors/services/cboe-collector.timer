@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily CBOE SPX Options Chain Collection (4:30 PM ET after market close)
+
+[Timer]
+# 4:30 PM ET = 21:30 UTC (EST) or 20:30 UTC (EDT)
+# Use America/New_York to handle DST automatically
+OnCalendar=*-*-* 16:30:00 America/New_York
+RandomizedDelaySec=120
+Persistent=true
+
+[Install]
+WantedBy=timers.target

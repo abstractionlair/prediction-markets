@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily FRED benchmark data update
+
+[Timer]
+OnCalendar=*-*-* 06:00:00 UTC
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target

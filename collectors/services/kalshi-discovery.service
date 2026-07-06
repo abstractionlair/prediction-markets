@@ -1,0 +1,16 @@
+[Unit]
+Description=Kalshi discovery — event and market metadata refresh (data system)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets
+EnvironmentFile=/etc/prediction-markets/kalshi-sync.env
+ExecStart=/usr/bin/python3 -u -m collectors.kalshi.discovery sync
+MemoryHigh=256M
+MemoryMax=384M
+
+[Install]
+WantedBy=multi-user.target

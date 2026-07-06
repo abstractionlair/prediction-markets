@@ -1,0 +1,533 @@
+# Gold Set for Classifier Testing
+#
+# Each entry has expected labels and a rationale. Difficulty levels:
+#   easy     — unambiguous, should always be correct
+#   boundary — tests a specific decision boundary
+#   ambiguous — defensible alternatives exist (listed in 'also_acceptable')
+
+# ──────────────────────────────────────────────────────────────────────
+# EASY CASES — sanity checks
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXBTC
+  generating_process: continuous_underlyer
+  payoff_type: terminal
+  topic: financial
+  difficulty: easy
+  rationale: Bitcoin price at specific time. Textbook continuous_underlyer/terminal.
+
+- series_ticker: KXINX
+  generating_process: continuous_underlyer
+  payoff_type: terminal
+  topic: financial
+  difficulty: easy
+  rationale: S&P 500 price at close. Textbook continuous_underlyer/terminal.
+
+- series_ticker: KXCPI
+  generating_process: scheduled_release
+  payoff_type: binary_event
+  topic: economic_data
+  difficulty: easy
+  rationale: CPI released on a known date by BLS. Pure scheduled_release.
+
+- series_ticker: KXPAYROLLS
+  generating_process: scheduled_release
+  payoff_type: binary_event
+  topic: economic_data
+  difficulty: easy
+  rationale: Nonfarm payrolls. Official data release on known date.
+
+- series_ticker: KXFED
+  generating_process: scheduled_release
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: easy
+  rationale: Fed rate decision at known FOMC meeting date.
+
+- series_ticker: KXHOUSERACE
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: politics_elections
+  difficulty: easy
+  rationale: Election outcome. Information accumulates via polls, campaigns.
+
+- series_ticker: KXEURUSD
+  generating_process: continuous_underlyer
+  payoff_type: terminal
+  topic: financial
+  difficulty: easy
+  rationale: EUR/USD rate at specific time.
+
+- series_ticker: KXGDP
+  generating_process: scheduled_release
+  payoff_type: binary_event
+  topic: economic_data
+  difficulty: easy
+  rationale: GDP released on known date by BEA.
+
+- series_ticker: KXTRUMPPARDONS
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: easy
+  rationale: >
+    "Will Trump pardon X by date Y?" Classic hazard — can happen any time.
+
+- series_ticker: KXLEADERSOUT
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: geopolitics
+  difficulty: easy
+  rationale: >
+    "Will a world leader leave position by date?" Hazard process.
+
+# ──────────────────────────────────────────────────────────────────────
+# EASY: explicit_randomization
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: SYNTHETIC_DRAFT_LOTTERY
+  generating_process: explicit_randomization
+  payoff_type: binary_event
+  topic: entertainment_sports
+  difficulty: easy
+  rationale: >
+    NBA draft lottery uses a documented randomization mechanism (weighted
+    probability balls). True explicit_randomization — the outcome is
+    determined by a physical random process, not information accumulation.
+  note: Synthetic — no Kalshi series exists. Tests that the category works.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: terminal vs extremum/barrier payoff
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXBTCMAX100
+  generating_process: continuous_underlyer
+  payoff_type: barrier
+  topic: financial
+  difficulty: boundary
+  tests: terminal_vs_barrier
+  rationale: >
+    "Will BTC reach $100K?" is a barrier/touch contract — resolves yes the
+    moment BTC hits the level. Probability is monotonically non-decreasing
+    once the underlyer approaches. NOT terminal (doesn't settle at a point).
+
+- series_ticker: KXINXMAXY
+  generating_process: continuous_underlyer
+  payoff_type: extremum
+  topic: financial
+  difficulty: boundary
+  tests: terminal_vs_extremum
+  rationale: >
+    "S&P 500 yearly max." Settles on the running maximum over the year.
+    Path-dependent — very different dynamics from a terminal contract.
+
+- series_ticker: KXBTCMINY
+  generating_process: continuous_underlyer
+  payoff_type: extremum
+  topic: financial
+  difficulty: boundary
+  tests: terminal_vs_extremum
+  rationale: Bitcoin yearly minimum. Running-minimum contract.
+
+- series_ticker: KXBTCY
+  generating_process: continuous_underlyer
+  payoff_type: terminal
+  topic: financial
+  difficulty: boundary
+  tests: terminal_vs_extremum
+  rationale: >
+    Bitcoin yearly price (end-of-year level). Terminal, NOT extremum —
+    despite the yearly timeframe, it settles on the value at a specific time.
+
+- series_ticker: SYNTHETIC_SPX_ATH
+  generating_process: continuous_underlyer
+  payoff_type: barrier
+  topic: financial
+  difficulty: boundary
+  tests: barrier_vs_extremum
+  rationale: >
+    "Will the S&P 500 set a new all-time high this year?"
+    This is barrier (resolves yes the moment the level is touched)
+    not extremum (which settles on the running max/min value).
+    The distinction: barrier resolves on FIRST touch; extremum settles
+    on the aggregate statistic over the window.
+  note: Synthetic.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: scheduled_release vs convergent_binary
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXFEDDECISION
+  generating_process: scheduled_release
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: boundary
+  tests: scheduled_vs_convergent
+  rationale: >
+    Fed rate decision type (cut/hold/hike) at known FOMC meeting date.
+    Despite gradual signal accumulation (speeches, minutes, data),
+    the decision is revealed at a known point. scheduled_release wins
+    per the decision tree.
+
+- series_ticker: KXSCOURT
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: boundary
+  tests: scheduled_vs_convergent
+  rationale: >
+    "Who will be the next Supreme Court justice?" No known confirmation
+    date when the market opens — the nomination and confirmation process
+    unfolds over time. Information accumulates (shortlists, hearings).
+    convergent_binary, not scheduled_release.
+
+- series_ticker: KXRATECUTCOUNT
+  generating_process: counting_process
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: boundary
+  tests: counting_vs_scheduled
+  rationale: >
+    "Number of Fed rate cuts this year." Even though each individual cut
+    is a scheduled_release event, the market is on the cumulative COUNT.
+    counting_process per the decision tree.
+
+- series_ticker: KXFRENCHPRES
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: politics_elections
+  difficulty: boundary
+  tests: scheduled_vs_convergent
+  rationale: >
+    French presidential election. The election date is known in advance,
+    which might suggest scheduled_release. But the outcome is not a hidden
+    number being revealed — it is actively being determined by voters via
+    an information-accumulation process (polls, debates, campaigns).
+    convergent_binary: the generating process is voter decision-making
+    converging on an outcome, not an institution releasing a pre-determined
+    value.
+
+- series_ticker: SYNTHETIC_SCOTUS_RULING
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: ambiguous
+  tests: scheduled_vs_convergent
+  also_acceptable: [scheduled_release]
+  rationale: >
+    "Will the Supreme Court rule in favor of X in case Y?"
+    Genuinely ambiguous: the ruling has an approximately known date
+    (end of term), which fits scheduled_release. But oral arguments,
+    leaked deliberations, and legal analysis provide gradual information,
+    which fits convergent_binary. Both are defensible. convergent_binary
+    preferred because the decision is not fully determined until the
+    justices finalize their votes.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: hazard_process vs convergent_binary
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXCABOUT
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: boundary
+  tests: hazard_vs_convergent
+  rationale: >
+    "Who will be the first cabinet member to depart?" Can happen at
+    any time. Non-occurrence is informative. Classic hazard. Note:
+    "first-to" markets are hazard because resolution time is endogenous —
+    the market resolves the moment the event occurs, not at a fixed date.
+
+- series_ticker: KXEPSTEINLIST
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: boundary
+  tests: hazard_vs_convergent
+  rationale: >
+    "Will the Epstein list be released by date?" Discrete event that
+    can happen any time. hazard_process.
+
+- series_ticker: KXATTENDSOTU
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: politics_elections
+  difficulty: boundary
+  tests: hazard_vs_convergent
+  rationale: >
+    "Will X attend the State of the Union?" The SOTU has a known date.
+    Information accumulates beforehand (invitations, statements, travel plans).
+    Resolves at a known point. convergent_binary, not hazard_process —
+    even though it's a binary "will X happen" question.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: hazard_process vs counting_process (count-of-1)
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXBILLS
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: boundary
+  tests: hazard_vs_counting_count_of_1
+  rationale: >
+    "Will legislation X become law before Jan 1, 2027?" Discrete event
+    by deadline — can happen at any time, non-occurrence is informative.
+    hazard_process per the count-of-1 rule.
+
+- series_ticker: KXTRUMPADMINLEAVE
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: easy
+  rationale: >
+    "Will admin official leave by date?" hazard_process.
+
+- series_ticker: KXTRUTHSOCIAL
+  generating_process: counting_process
+  payoff_type: binary_event
+  topic: politics_elections
+  difficulty: boundary
+  tests: hazard_vs_counting
+  rationale: >
+    "Will Trump post more than N times this week?" Cumulative count
+    vs threshold. counting_process (count > 1).
+
+- series_ticker: KXEOTRUMPTERM
+  generating_process: counting_process
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: boundary
+  tests: hazard_vs_counting
+  rationale: >
+    "Number of executive orders." Count of discrete actions against
+    a threshold. counting_process.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: continuous_underlyer vs counting_process
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: SYNTHETIC_BTC_ATH_COUNT
+  generating_process: counting_process
+  payoff_type: binary_event
+  topic: financial
+  difficulty: boundary
+  tests: continuous_vs_counting
+  rationale: >
+    "Will BTC make more than 5 new all-time highs this month?"
+    The count is the defining feature per the taxonomy. counting_process
+    wins over continuous_underlyer even though the thing being counted
+    is defined on a continuous asset.
+  note: Synthetic — tests taxonomy boundary rule.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: explicit_randomization vs convergent_binary
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXFEDCHAIRNOM
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: boundary
+  tests: randomization_vs_convergent
+  rationale: >
+    "Who will be the next Fed Chair?" Currently classified as coin_flip/
+    explicit_randomization, but this is WRONG. There is extensive
+    information: candidate positioning, political signals, insider
+    speculation. This is convergent_binary. It is NOT a randomization
+    mechanism.
+
+- series_ticker: KXSP500ADDQ
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: financial
+  difficulty: boundary
+  tests: randomization_vs_convergent
+  rationale: >
+    "Will company X be added to S&P 500?" S&P committee decision.
+    There IS predictive information (market cap, sector needs, eligibility).
+    convergent_binary, not explicit_randomization. Also not scheduled_release —
+    the S&P committee has no fixed known decision date.
+
+- series_ticker: KXDNC28HOST
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: politics_elections
+  difficulty: boundary
+  tests: randomization_vs_convergent
+  rationale: >
+    "DNC convention host city." Committee decision with lobbying,
+    leaked preferences, bid processes. convergent_binary. Not
+    scheduled_release — no fixed known announcement date.
+
+- series_ticker: KXMICHELINSEA
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: entertainment_sports
+  difficulty: boundary
+  tests: opaque_decision
+  rationale: >
+    "Michelin star designation." Expert panel decision. Some information
+    exists (restaurant quality, critic reviews) but the panel's criteria
+    are opaque. convergent_binary — opacity of the decision process does
+    not make it randomization. Per the taxonomy's positive definition,
+    explicit_randomization requires a documented randomization mechanism
+    (dice, lottery balls, RNG). An opaque human decision is NOT the same
+    as a random one.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: opaque decisions (NOT randomization)
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXTIMEDECADE20S
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: entertainment_sports
+  difficulty: boundary
+  tests: opaque_decision
+  rationale: >
+    "Time Person of the Decade." Editorial decision by Time magazine.
+    Some information channel exists (public prominence, news coverage),
+    but the decision is opaque. convergent_binary — opacity does not
+    equal randomness. Per the taxonomy's positive definition,
+    explicit_randomization requires a documented randomization mechanism.
+    An opaque editorial decision is not random; it is merely hard to
+    predict.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: continuous_underlyer vs scheduled_release (gas prices)
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXAAAGASMAXCA
+  generating_process: scheduled_release
+  payoff_type: extremum
+  topic: economic_data
+  difficulty: boundary
+  tests: continuous_vs_scheduled
+  rationale: >
+    "How high will gas prices in California get this year?" Gas prices
+    are officially reported weekly by AAA/EIA — they are NOT a continuously
+    traded asset like BTC or SPX. Settles on the officially reported number.
+    scheduled_release with extremum payoff. Topic is economic_data, not financial.
+
+- series_ticker: KXAAAGASW
+  generating_process: scheduled_release
+  payoff_type: binary_event
+  topic: economic_data
+  difficulty: boundary
+  tests: continuous_vs_scheduled
+  rationale: >
+    "Gas prices weekly." Official AAA/EIA weekly report. scheduled_release.
+    Even though gas prices change daily at the pump, the SETTLEMENT is
+    on the officially reported statistic. Payoff is binary_event (not
+    terminal) because for scheduled_release markets, terminal/barrier/extremum
+    apply only when the process is continuous_underlyer. A threshold on an
+    economic statistic is a binary event: "did the number come in above X?"
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: topic classification
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXVISITVENEZUELA
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: geopolitics
+  difficulty: boundary
+  tests: topic_geopolitics_vs_government_policy
+  rationale: >
+    "Will Trump visit Venezuela?" International diplomacy. geopolitics
+    rather than government_policy — it's about international relations,
+    not a domestic policy decision.
+
+- series_ticker: KXNEXTIRANLEADER
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: geopolitics
+  difficulty: boundary
+  tests: topic_geopolitics_vs_politics
+  rationale: >
+    "Who will be the next Supreme Leader of Iran?" Foreign political
+    succession. geopolitics, not politics_elections (which is for
+    domestic/democratic elections).
+
+- series_ticker: KXEFFR
+  generating_process: continuous_underlyer
+  payoff_type: terminal
+  topic: financial
+  difficulty: ambiguous
+  tests: continuous_vs_scheduled_fixing
+  also_acceptable: [scheduled_release]
+  rationale: >
+    Effective fed funds rate. Genuinely ambiguous: EFFR is derived from
+    actual overnight lending transactions (market activity), but it is
+    published once daily by the NY Fed (a scheduled fixing, not a
+    continuously observable quote). Fed funds *futures* are continuously
+    traded, but EFFR itself is not. We lean continuous_underlyer because
+    the underlying transactions happen continuously, but scheduled_release
+    is defensible since the settlement number is a daily publication.
+    R2 review: 2 of 3 models preferred scheduled_release; we keep
+    continuous_underlyer as primary but mark ambiguous.
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: sports and entertainment
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXSUPERBOWLWHITEHOUSE
+  generating_process: convergent_binary
+  payoff_type: binary_event
+  topic: entertainment_sports
+  difficulty: boundary
+  tests: sports_classification
+  rationale: >
+    Despite the ticker name suggesting "will the Super Bowl winners
+    visit the White House?" this market is about a sports outcome
+    (which team wins the Super Bowl). convergent_binary — information
+    accumulates through the season (team records, injuries, matchups).
+    Not explicit_randomization (competitive outcomes are not random).
+
+# ──────────────────────────────────────────────────────────────────────
+# BOUNDARY: topic ambiguity
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: KXCBDECISION
+  generating_process: scheduled_release
+  payoff_type: binary_event
+  topic: government_policy
+  difficulty: ambiguous
+  tests: topic_government_vs_geopolitics
+  also_acceptable: {topic: [geopolitics]}
+  rationale: >
+    "Will the Bank of Japan raise rates?" The process is clearly
+    scheduled_release (known meeting date). But topic could be
+    government_policy (institutional decision) or geopolitics
+    (foreign institution). We label government_policy as default
+    for central bank decisions, but geopolitics is defensible for
+    non-domestic institutions.
+
+# ──────────────────────────────────────────────────────────────────────
+# SYNTHETIC: topic coverage
+# ──────────────────────────────────────────────────────────────────────
+
+- series_ticker: SYNTHETIC_HURRICANE
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: weather_environment
+  difficulty: boundary
+  tests: topic_coverage
+  rationale: >
+    "Will a Category 5 hurricane make US landfall this season?"
+    hazard_process (discrete event by deadline, non-occurrence informative).
+    Topic is weather_environment.
+  note: Synthetic — tests topic coverage.
+
+- series_ticker: SYNTHETIC_SPACEX
+  generating_process: hazard_process
+  payoff_type: binary_event
+  topic: science_technology
+  difficulty: boundary
+  tests: topic_coverage
+  rationale: >
+    "Will SpaceX Starship reach orbit by July 2026?"
+    hazard_process (can happen any time, non-occurrence informative).
+  note: Synthetic.

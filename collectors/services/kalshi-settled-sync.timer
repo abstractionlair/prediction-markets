@@ -1,0 +1,9 @@
+[Unit]
+Description=Kalshi settled sync timer — weekly settlement download
+
+[Timer]
+OnCalendar=Sun *-*-* 06:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,19 @@
+[Unit]
+Description=PredictIt Data Collector
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets/collectors
+ExecStart=/opt/prediction-markets/venv/bin/python3 -u predictit_collector.py --interval 300
+Restart=on-failure
+RestartSec=30
+StartLimitIntervalSec=300
+StartLimitBurst=5
+MemoryHigh=400M
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

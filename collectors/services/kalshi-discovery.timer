@@ -1,0 +1,9 @@
+[Unit]
+Description=Kalshi discovery timer — refresh events and markets every 30 min
+
+[Timer]
+OnCalendar=*:00,30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

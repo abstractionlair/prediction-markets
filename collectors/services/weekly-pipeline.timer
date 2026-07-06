@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly prediction markets data pipeline
+
+[Timer]
+OnCalendar=Sun *-*-* 08:00:00 UTC
+RandomizedDelaySec=600
+Persistent=true
+
+[Install]
+WantedBy=timers.target

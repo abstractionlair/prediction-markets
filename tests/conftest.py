@@ -1,0 +1,62 @@
+"""Shared test fixtures for prediction-markets tests."""
+
+import sys
+from pathlib import Path
+
+# Add project root and subdirs to path so imports work
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / "trading"))
+sys.path.insert(0, str(PROJECT_ROOT / "research"))
+sys.path.insert(0, str(PROJECT_ROOT / "collectors"))
+
+from strategy import Opportunity, TradePair, edge_per_day
+
+
+def make_opportunity(
+    ticker="KXBTCD-26MAR2717-T60399.99",
+    event_ticker="KXBTCD-26MAR2717",
+    series="KXBTCD",
+    side="yes",
+    bid_price=90,
+    best_bid=89,
+    best_ask=92,
+    spread=3,
+    edge=0.025,
+    days_to_settle=1.0,
+    edge_per_day=0.025,
+    generating_process="continuous_underlyer",
+    topic="financial",
+    title="BTC above $60,399.99?",
+) -> Opportunity:
+    return Opportunity(
+        ticker=ticker, event_ticker=event_ticker, series=series,
+        side=side, bid_price=bid_price,
+        best_bid=best_bid, best_ask=best_ask, spread=spread,
+        edge=edge, days_to_settle=days_to_settle, edge_per_day=edge_per_day,
+        generating_process=generating_process, topic=topic, title=title,
+    )
+
+
+def make_pair(
+    yes_ticker="KXBTCD-26MAR2717-T60399.99",
+    no_ticker="KXBTCD-26MAR2717-T68299.99",
+    event_ticker="KXBTCD-26MAR2717",
+    series="KXBTCD",
+    edge=0.025,
+    days_to_settle=1.0,
+    is_chain=True,
+) -> TradePair:
+    yes_opp = make_opportunity(
+        ticker=yes_ticker, event_ticker=event_ticker, series=series,
+        side="yes", bid_price=90, edge=edge, days_to_settle=days_to_settle,
+        edge_per_day=edge_per_day(edge, days_to_settle),
+    )
+    no_opp = make_opportunity(
+        ticker=no_ticker, event_ticker=event_ticker, series=series,
+        side="no", bid_price=96, edge=edge, days_to_settle=days_to_settle,
+        edge_per_day=edge_per_day(edge, days_to_settle),
+    )
+    avg_epd = (yes_opp.edge_per_day + no_opp.edge_per_day) / 2
+    return TradePair(yes_opp=yes_opp, no_opp=no_opp,
+                     edge_per_day=avg_epd, is_chain=is_chain)

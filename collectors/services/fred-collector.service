@@ -1,0 +1,15 @@
+[Unit]
+Description=FRED Benchmark Data Collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=prediction-markets
+WorkingDirectory=/opt/prediction-markets/collectors
+Environment=HOME=/opt/prediction-markets
+EnvironmentFile=/etc/prediction-markets/fred-collector.env
+ExecStart=/opt/prediction-markets/venv/bin/python3 fred_collector.py --update
+TimeoutStartSec=300
+MemoryHigh=128M
+MemoryMax=256M

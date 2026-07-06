@@ -1,0 +1,21 @@
+[Unit]
+Description=Prediction-markets DB retention sweep
+After=postgresql.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=prediction-markets
+Group=claude
+WorkingDirectory=/opt/prediction-markets
+EnvironmentFile=/etc/prediction-markets/prediction-markets.env
+ExecStart=/usr/bin/python3 -m scripts.retention
+StandardOutput=journal
+StandardError=journal
+# Retention deletes 1-2 days' worth of trades each daily run (~770MB/day);
+# normally finishes in <2 min once the initial backlog is gone.
+TimeoutStartSec=2h
+OnFailure=notify-failure@%n.service
+
+[Install]
+WantedBy=multi-user.target

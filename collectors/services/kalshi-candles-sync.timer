@@ -1,0 +1,9 @@
+[Unit]
+Description=Kalshi candles sync timer — hourly + daily candle collection
+
+[Timer]
+OnCalendar=*-*-* *:30:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target
