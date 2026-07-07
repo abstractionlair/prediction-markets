@@ -27,7 +27,7 @@ import psycopg2
 from trading.cost_model import KALSHI_COSTS
 from trading.fill_model import FillModel, CandleData
 from trading.flb_strategy import FLBStrategy
-from trading.flow_model import compute_opposing_flow, compute_trailing_volume, FlowModel
+from trading.flow_model import compute_opposing_flow
 from trading.risk import RiskLimits
 from trading.strategy import (
     DEFAULT_PARAMS,
@@ -358,7 +358,7 @@ def replay(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
     elif use_flow_model and not replay_trades:
         # Probabilistic fills don't need per-ticker trades at all
         replay_trades = {}
-        print(f"  Flow-model fills (no per-ticker trade data needed)")
+        print("  Flow-model fills (no per-ticker trade data needed)")
     if expanding:
         expanding['replay_trades'] = replay_trades
 
@@ -391,7 +391,6 @@ def replay(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
         elif expanding_view_factory is None:
             # Legacy MarketView path (FlowModel, FillPredictor)
             from trading.market_view import MarketView
-            cached_fill_estimator = None
             cached_flow_model = None
 
     # ── Replay each period ────────────────────────────────────────
@@ -1065,7 +1064,6 @@ def main():
         edge_lookup = EdgeLookup()
 
     # Preload replay trades for tape-based fills
-    replay_trades_data = {}
     if use_flow and expanding:
         # Load trade tape for the replay universe (tickers from candle data)
         # This happens after candle loading in replay(), but we need to

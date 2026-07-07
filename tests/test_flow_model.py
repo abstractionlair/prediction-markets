@@ -10,14 +10,13 @@ Tests with synthetic data only — no DB, no API. Covers:
 - Threshold checks (MIN_COMBINED, MIN_PER_OUTCOME)
 """
 
-import math
 from datetime import datetime, timedelta, timezone
 
 from trading.flow_model import (
-    FlowCDF, FlowEstimate, FlowModel,
+    FlowCDF, FlowModel,
     compute_opposing_flow, compute_trailing_volume,
     _time_bucket, _trailing_vol_bucket, _log_linear_interp,
-    CDF_THRESHOLDS, COARSE_MAP,
+    COARSE_MAP,
 )
 
 
@@ -431,7 +430,7 @@ def _make_synthetic_data():
 
     for i in range(20):
         ticker = f"TESTSERIES-26JAN01-T{i}"
-        event_ticker = f"TESTSERIES-26JAN01"
+        event_ticker = "TESTSERIES-26JAN01"
         settle_time = base + timedelta(hours=24 + i)
         result = 'yes' if i % 2 == 0 else 'no'
         settled_markets[ticker] = (settle_time, result, event_ticker)
@@ -485,7 +484,7 @@ class TestCalibrate:
         """Calibrated model can serve fill estimates."""
         trades, settled, classifications = _make_synthetic_data()
         model = FlowModel.calibrate(trades, settled, classifications)
-        est = model.estimate('counting_process', 'ent_sports', 5.0, 'no', 10,
+        model.estimate('counting_process', 'ent_sports', 5.0, 'no', 10,
                              92, 0)
         # Should get an estimate (synthetic data has enough observations)
         # It's OK if None — may not have enough in the specific bin.
@@ -533,7 +532,6 @@ class TestCalibrate:
         # but NOT for NO side (at tail prices)
         # Check by looking at flow table entries
         yes_keys = [k for k in model.flow_table if k[3] == 'yes']
-        no_keys = [k for k in model.flow_table if k[3] == 'no']
         assert len(yes_keys) > 0  # YES side should have flow data
 
 

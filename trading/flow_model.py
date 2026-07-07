@@ -21,8 +21,8 @@ See docs/design/fill-model-v2-spec.md (Draft 6) for full specification.
 import bisect
 import math
 from collections import defaultdict
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from dataclasses import dataclass
+from datetime import timedelta
 
 
 # ── Data structures ──────────────────────────────────────────────────

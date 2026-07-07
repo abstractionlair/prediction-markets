@@ -14,12 +14,11 @@ Test categories:
 import pytest
 from datetime import datetime, timezone, timedelta
 
-from framework.estimator import BoundEstimator, EstimatorFactory, EstimatorFeature
+from framework.estimator import EstimatorFactory
 from framework.factories import (
     EventRateFactory, ClassificationFactory, FillRateFactory, FillEstimate,
 )
 from framework.feature import FeatureRegistry
-from framework.view import View
 from framework.view_factory import ViewFactory
 
 

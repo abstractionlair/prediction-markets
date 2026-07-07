@@ -11,12 +11,12 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 
 from framework.factories import (
-    ClassificationFactory, EventRateFactory, FillEstimate, FillRateFactory,
+    FillEstimate,
 )
-from framework.feature import FeatureRegistry, PreloadedFeature
+from framework.feature import PreloadedFeature
 from framework.view import View
 from framework.view_factory import ViewFactory
-from trading.ev_strategy import EVStrategy, compute_trade_ev
+from trading.ev_strategy import EVStrategy
 
 
 # ── Synthetic data for tests ─────────────────────────────────────

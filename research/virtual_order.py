@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from research.fill_simulator import FillSimulator, SimResult, Trade, load_trades
 

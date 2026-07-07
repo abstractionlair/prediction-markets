@@ -15,8 +15,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
-import sys
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -231,7 +229,7 @@ def run(input_path: Path, output_dir: Path):
     df["day_idx"] = df["placement_time"].apply(
         lambda ts: day_index(ts, era_start))
     day_counts = df["day_idx"].value_counts().sort_index()
-    print(f"\nRows per day:")
+    print("\nRows per day:")
     for d, n in day_counts.items():
         print(f"  day {d} ({(era_start + timedelta(days=d-1)).date()}): {n:,}")
 
@@ -277,11 +275,11 @@ def run(input_path: Path, output_dir: Path):
             "best_iter": booster.best_iteration,
         })
 
-    print(f"\n=== Rolling CV summary ===")
+    print("\n=== Rolling CV summary ===")
     print(pd.DataFrame(fold_stats).to_string(index=False))
 
     # Final training on days 1-6
-    print(f"\n=== Final training on days 1-6, test on day 7 ===")
+    print("\n=== Final training on days 1-6, test on day 7 ===")
     # Use average best iteration from folds
     best_iter_avg = int(np.mean([s["best_iter"] for s in fold_stats]))
     print(f"Using {best_iter_avg} iterations (avg from folds)")
@@ -300,7 +298,7 @@ def run(input_path: Path, output_dir: Path):
 
     mae_test = np.abs(preds_test - df_test["fill_fraction"].values).mean()
     base_test = baseline_mae(df_test)
-    print(f"\n=== Test (day 7) metrics ===")
+    print("\n=== Test (day 7) metrics ===")
     print(f"MAE: {mae_test:.4f}  (baseline {base_test:.4f}, "
           f"improvement {100*(base_test-mae_test)/base_test:.1f}%)")
 
@@ -317,21 +315,21 @@ def run(input_path: Path, output_dir: Path):
     obs_gap_no = (
         df_test[df_test["side"] == "no"].groupby("pays_off", observed=False)["contracts_filled"].mean()
     )
-    print(f"\n=== Outcome-conditional E[K] (test) ===")
+    print("\n=== Outcome-conditional E[K] (test) ===")
     print(f"YES side  predicted: {dict(gap_yes.round(2))}")
     print(f"YES side  observed:  {dict(obs_gap_yes.round(2))}")
     print(f"NO  side  predicted: {dict(gap_no.round(2))}")
     print(f"NO  side  observed:  {dict(obs_gap_no.round(2))}")
 
     # Stratified calibration
-    print(f"\n=== Calibration by (side × pays_off × quantity) ===")
+    print("\n=== Calibration by (side × pays_off × quantity) ===")
     cal = calibration_stratified(df_test, "pred_fill_fraction",
                                  ["side", "pays_off", "quantity"])
     cal = cal[cal["n"] >= 50]   # minimum support
     print(cal.round(3).to_string())
 
     # Feature importance
-    print(f"\n=== Top 20 features by importance ===")
+    print("\n=== Top 20 features by importance ===")
     imp = pd.DataFrame({
         "feature": booster.feature_name(),
         "gain": booster.feature_importance(importance_type="gain"),

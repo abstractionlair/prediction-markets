@@ -12,12 +12,10 @@ See docs/design/fill-prediction-model-spec.md for full specification.
 """
 
 import bisect
-import math
 import pickle
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import timedelta
-from pathlib import Path
 
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier

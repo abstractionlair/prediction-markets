@@ -28,7 +28,7 @@ import os
 import random
 import sys
 from dataclasses import asdict
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 import psycopg2
 
@@ -328,7 +328,7 @@ def generate(output_path: str, n_per_class: int = DEFAULT_TICKERS_PER_CLASS,
     # Summary stats
     n_filled = sum(1 for r in all_rows if r["fully_filled"])
     n_partial = sum(1 for r in all_rows if 0 < r["contracts_filled"] < r["quantity"])
-    print(f"\nSummary:")
+    print("\nSummary:")
     print(f"  Fully filled: {n_filled} ({100*n_filled/len(all_rows):.1f}%)")
     print(f"  Partial: {n_partial} ({100*n_partial/len(all_rows):.1f}%)")
     print(f"  Unfilled: {len(all_rows)-n_filled-n_partial} "

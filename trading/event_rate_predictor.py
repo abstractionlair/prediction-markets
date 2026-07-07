@@ -12,7 +12,6 @@ At the same mid-price, a tight-spread high-OI market is better calibrated
 than a wide-spread low-OI market. The GBT learns these interactions.
 """
 
-import math
 
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier

@@ -5,7 +5,7 @@ Pure logic tests run without any external dependencies.
 """
 
 import os
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -23,7 +23,7 @@ class TestRetry:
         assert result == 42
 
     def test_retries_on_exception(self):
-        from data.ingestion.retry import with_retry, RetryExhausted
+        from data.ingestion.retry import with_retry
 
         call_count = 0
 
@@ -263,7 +263,7 @@ class TestHealthCheckDB:
         assert isinstance(statuses, list)
 
     def test_update_cache(self, db_conn):
-        from data.registry import register_dataset, get_dataset
+        from data.registry import register_dataset
         from data.health.check import update_cache, check_one
 
         register_dataset(
@@ -461,7 +461,7 @@ class TestFlushSplice:
         cur = splice_conn.cursor()
         buffer = [("_test_splice_1", "TEST-TICKER", "2026-01-01T00:00:00Z",
                     1, 85, 15, "yes", "historical")]
-        affected = _flush_trades_historical(cur, buffer)
+        _flush_trades_historical(cur, buffer)
         splice_conn.commit()
 
         cur.execute("SELECT origin, yes_price FROM prediction_markets.kalshi_trades WHERE trade_id = '_test_splice_1'")
@@ -744,7 +744,6 @@ class TestCandleFlushSplice:
     @pytest.fixture
     def candle_conn(self, db_conn):
         """Setup: insert a test candle, clean up after."""
-        from datetime import datetime, timezone
 
         cur = db_conn.cursor()
         # Insert a live hourly candle
@@ -781,7 +780,7 @@ class TestCandleFlushSplice:
                     55, 57, 60, 53,
                     51, 53, 56, 49,
                     200, 6000)]
-        affected = _flush_candles_historical(cur, buffer)
+        _flush_candles_historical(cur, buffer)
         candle_conn.commit()
 
         cur.execute("""
@@ -912,7 +911,7 @@ class TestCandleFlushSplice:
             (ticker, period_end, 60, "historical",
              30, 31, 32, 29, 40, 41, 42, 39, 35, 36, 37, 34, 200, 6000),
         ]
-        inserted = _flush_candles_historical(cur, buffer)
+        _flush_candles_historical(cur, buffer)
         candle_conn.commit()
 
         cur.execute("""
