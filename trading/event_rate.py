@@ -18,7 +18,7 @@ for ask calibration.
 import math
 from collections import defaultdict
 
-from buckets import price_bucket, smooth_time_buckets
+from trading.buckets import price_bucket, smooth_time_buckets
 
 # Adaptive bucketing parameters — thresholds in distinct markets.
 MIN_MARKETS_PER_BUCKET = 30

@@ -2,7 +2,7 @@
 
 import math
 
-from strategy import (
+from trading.strategy import (
     TradingParams,
     detect_chain,
     edge_per_day,

@@ -41,7 +41,7 @@ def build_view_factory(observations, classifications,
         ViewFactory ready for build(as_of=...) or build_live().
     """
     if costs is None:
-        from cost_model import KALSHI_COSTS
+        from trading.cost_model import KALSHI_COSTS
         costs = KALSHI_COSTS
 
     registry = FeatureRegistry()
@@ -101,7 +101,7 @@ def build_view_factory_from_db(conn, use_flow_model=False,
             "Use the FillRateEstimator path (use_flow_model=False)."
         )
 
-    from market_view import preload_observations, preload_fill_data
+    from trading.market_view import preload_observations, preload_fill_data
 
     observations, classifications = preload_observations(conn)
     fill_data = preload_fill_data(conn)

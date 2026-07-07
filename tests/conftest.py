@@ -1,16 +1,11 @@
-"""Shared test fixtures for prediction-markets tests."""
+"""Shared test fixtures for prediction-markets tests.
 
-import sys
-from pathlib import Path
+Tests import the project packages directly (``trading.*``, ``framework.*``,
+...), so the package must be importable — ``pip install -e .`` — rather than
+relying on sys.path manipulation here.
+"""
 
-# Add project root and subdirs to path so imports work
-PROJECT_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
-sys.path.insert(0, str(PROJECT_ROOT / "trading"))
-sys.path.insert(0, str(PROJECT_ROOT / "research"))
-sys.path.insert(0, str(PROJECT_ROOT / "collectors"))
-
-from strategy import Opportunity, TradePair, edge_per_day
+from trading.strategy import Opportunity, TradePair, edge_per_day
 
 
 def make_opportunity(

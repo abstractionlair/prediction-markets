@@ -17,7 +17,7 @@ import math
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier
 
-from fill_predictor import GP_ENCODING, TOPIC_ENCODING
+from trading.fill_predictor import GP_ENCODING, TOPIC_ENCODING
 
 
 FEATURE_NAMES = [

@@ -26,7 +26,7 @@ from datetime import datetime, timezone
 
 import psycopg2
 
-from fill_model import FillModel, CandleData
+from trading.fill_model import FillModel, CandleData
 
 def get_conn():
     dsn = os.environ.get("CLAUDE_HUB_PG_DSN", "")

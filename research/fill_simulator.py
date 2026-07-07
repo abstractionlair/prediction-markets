@@ -13,7 +13,7 @@ probability predictions must be calibrated against this simulator's
 fill rates (consistency requirement from fill-model-requirements.md).
 
 Usage:
-    from fill_simulator import FillSimulator, SimOrder
+    from research.fill_simulator import FillSimulator, SimOrder
 
     # Single order
     order = SimOrder(side='no', price_cents=93, quantity=8, q_ahead=50.0)

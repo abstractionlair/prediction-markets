@@ -24,17 +24,17 @@ from datetime import datetime, timezone
 
 import psycopg2
 
-from cost_model import KALSHI_COSTS
-from fill_model import FillModel, CandleData
-from flb_strategy import FLBStrategy
-from flow_model import compute_opposing_flow, compute_trailing_volume, FlowModel
-from risk import RiskLimits
-from strategy import (
+from trading.cost_model import KALSHI_COSTS
+from trading.fill_model import FillModel, CandleData
+from trading.flb_strategy import FLBStrategy
+from trading.flow_model import compute_opposing_flow, compute_trailing_volume, FlowModel
+from trading.risk import RiskLimits
+from trading.strategy import (
     DEFAULT_PARAMS,
     TradingParams,
     optimal_quantity,
 )
-from track_record import TradeRecord, TrackRecord
+from trading.track_record import TradeRecord, TrackRecord
 
 
 def get_conn():
@@ -385,12 +385,12 @@ def replay(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
     expanding_flow = expanding.get('use_flow') if expanding else False
     expanding_view_factory = expanding.get('view_factory') if expanding else None
     if expanding:
-        from ev_strategy import EVStrategy
+        from trading.ev_strategy import EVStrategy
         if expanding_legacy:
             legacy_view = expanding['legacy_view']
         elif expanding_view_factory is None:
             # Legacy MarketView path (FlowModel, FillPredictor)
-            from market_view import MarketView
+            from trading.market_view import MarketView
             cached_fill_estimator = None
             cached_flow_model = None
 
@@ -680,7 +680,7 @@ def replay(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
                     # Compute tape-based trailing volume (matches calibration)
                     ticker_trades = replay_trades.get(ticker) if replay_trades else None
                     if ticker_trades:
-                        from flow_model import compute_trailing_volume
+                        from trading.flow_model import compute_trailing_volume
                         tape_vol = compute_trailing_volume(ticker_trades, period_end)
                     else:
                         tape_vol = candle_vol
@@ -688,7 +688,7 @@ def replay(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
                     est = strategy.view.fill_estimate(gp, topic, hours, side, q,
                                                        price, tape_vol)
                     tape_filled = sum(f[1] for f in order['fill_schedule'])
-                    from flow_model import _time_bucket, _trailing_vol_bucket
+                    from trading.flow_model import _time_bucket, _trailing_vol_bucket
                     diag = {
                         'p_fill_won': est.p_fill_won if est else None,
                         'p_fill_lost': est.p_fill_lost if est else None,
@@ -989,13 +989,13 @@ def main():
     args = parser.parse_args()
 
     if args.calibration == 'legacy':
-        from trader import EdgeLookup
+        from trading.trader import EdgeLookup
         edge_lookup = EdgeLookup()
     else:
-        from trader import CalibrationLookup
+        from trading.trader import CalibrationLookup
         edge_lookup = CalibrationLookup(price_method=args.calibration)
 
-    from trader import load_trading_params
+    from trading.trader import load_trading_params
     params = load_trading_params()
     overrides = {}
     if args.max_spread != 10:
@@ -1017,14 +1017,14 @@ def main():
 
     # Load pre-trained FillPredictor if requested
     if args.gbt_fills:
-        from fill_predictor import FillPredictor
+        from trading.fill_predictor import FillPredictor
         print(f"Loading FillPredictor from {args.gbt_fills}...")
         fill_predictor = FillPredictor.load(args.gbt_fills)
         print("  Loaded.")
 
     if args.expanding or args.expanding_legacy:
         if args.expanding_legacy:
-            from expanding_calibration import (
+            from trading.expanding_calibration import (
                 ExpandingEventRates, ExpandingFillRates, LegacyMarketView)
             print("Loading legacy expanding-window estimators...")
             leg_event = ExpandingEventRates(conn)
@@ -1032,7 +1032,7 @@ def main():
             legacy_view = LegacyMarketView(leg_event, leg_fill)
             expanding = {'legacy': True, 'legacy_view': legacy_view}
         else:
-            from market_view import preload_observations, preload_fill_data
+            from trading.market_view import preload_observations, preload_fill_data
             print("Preloading data for expanding-window calibration...")
             observations, classifications = preload_observations(conn)
             if fill_predictor is not None:
@@ -1043,7 +1043,7 @@ def main():
                     'use_flow': True,  # triggers joint search path
                 }
             elif use_flow:
-                from market_view import preload_trades
+                from trading.market_view import preload_trades
                 print("Preloading trade tape for FlowModel...")
                 trades_by_ticker, settled_markets = preload_trades(conn, max_tickers=20000)
                 expanding = {
@@ -1055,13 +1055,13 @@ def main():
                 }
             else:
                 fill_data = preload_fill_data(conn)
-                from view_bootstrap import build_view_factory
+                from trading.view_bootstrap import build_view_factory
                 expanding = {
                     'view_factory': build_view_factory(
                         observations, classifications, fill_data=fill_data),
                 }
         # Dummy edge_lookup — expanding mode handles its own calibration
-        from trader import EdgeLookup
+        from trading.trader import EdgeLookup
         edge_lookup = EdgeLookup()
 
     # Preload replay trades for tape-based fills

@@ -26,9 +26,9 @@ Usage in production:
 from collections import defaultdict
 from datetime import datetime, timezone
 
-from cost_model import KALSHI_COSTS
-from event_rate import EventRateEstimator
-from fill_rate import FillRateEstimator
+from trading.cost_model import KALSHI_COSTS
+from trading.event_rate import EventRateEstimator
+from trading.fill_rate import FillRateEstimator
 
 
 class MarketView:
@@ -71,7 +71,7 @@ class MarketView:
             self._n_fill_tickers = 0  # not tracked for pre-trained models
         elif all_trades is not None and all_trades:
             # V2: FlowModel from trade tape
-            from flow_model import FlowModel
+            from trading.flow_model import FlowModel
             self._flow_model = FlowModel.calibrate(
                 all_trades, settled_markets or {}, classifications or {},
                 as_of=as_of)
@@ -345,7 +345,7 @@ def preload_fill_data(conn):
 
     Returns dict of ticker -> {gp, topic, settled_at, result, candles: [...]}.
     """
-    from fill_model import CandleData
+    from trading.fill_model import CandleData
 
     cur = conn.cursor()
 

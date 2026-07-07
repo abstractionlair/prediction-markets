@@ -24,9 +24,9 @@ import numpy as np
 from scipy.special import betainc
 import psycopg2
 
-from strategy import maker_fee, identify_tails, parse_strike_value, TradingParams, DEFAULT_PARAMS, BLOCKED_SERIES
-from cost_model import KALSHI_COSTS
-from track_record import TradeRecord, TrackRecord
+from trading.strategy import maker_fee, identify_tails, parse_strike_value, TradingParams, DEFAULT_PARAMS, BLOCKED_SERIES
+from trading.cost_model import KALSHI_COSTS
+from trading.track_record import TradeRecord, TrackRecord
 
 
 # ─── Configuration ──────────────────────────────────────────────────
@@ -532,8 +532,8 @@ def run_simulation(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
     This is the closest we can get to simulating the live trader on
     historical data.
     """
-    from risk import RiskLimits
-    from strategy import detect_chain, optimal_quantity, rank_and_select_pairs
+    from trading.risk import RiskLimits
+    from trading.strategy import detect_chain, optimal_quantity, rank_and_select_pairs
 
     costs = KALSHI_COSTS
     risk = RiskLimits()
@@ -558,7 +558,7 @@ def run_simulation(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
 
     # Load hourly candles for settled markets
     # Need: by-period index (for scanning) and by-ticker index (for fill sim)
-    from fill_model import FillModel, CandleData
+    from trading.fill_model import FillModel, CandleData
     fill_model = FillModel(capture_rate=0.20)
 
     print("Loading hourly candles...")
@@ -721,7 +721,7 @@ def run_simulation(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
             event_markets[md['event']].append((ticker, bid_h, ask_l))
 
         # Build opportunities
-        from strategy import Opportunity, TradePair
+        from trading.strategy import Opportunity, TradePair
         opportunities = []
         event_is_chain = {}
 
@@ -752,7 +752,7 @@ def run_simulation(conn, edge_lookup, params: TradingParams = DEFAULT_PARAMS,
 
                 tails = identify_tails(bid_h, ask_l, params)
                 for tail in tails:
-                    from strategy import edge_per_day as compute_epd
+                    from trading.strategy import edge_per_day as compute_epd
                     epd = compute_epd(edge, hours / 24)
                     opportunities.append(Opportunity(
                         ticker=ticker, event_ticker=event_ticker, series=series,
@@ -1339,7 +1339,7 @@ def main():
     conn = get_conn()
 
     if args.simulate:
-        from trader import EdgeLookup
+        from trading.trader import EdgeLookup
         edge_lookup = EdgeLookup()
         params = TradingParams(
             min_tail=args.min_tail,
@@ -1385,7 +1385,7 @@ def main():
         print_results(trades, n_examined, n_with_trades)
     else:
         # Default: calibration-based edges (same as live trader)
-        from trader import EdgeLookup
+        from trading.trader import EdgeLookup
         edge_lookup = EdgeLookup()
 
         params = TradingParams(

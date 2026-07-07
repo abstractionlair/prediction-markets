@@ -119,7 +119,7 @@ def make_fill_data(n_tickers=20, gp='continuous_underlyer', topic='financial'):
     Creates ticker_data with enough candles and tickers to exceed
     min_per_cell (30) in the fill rate calibration.
     """
-    from fill_model import CandleData
+    from trading.fill_model import CandleData
 
     settled_at = datetime(2026, 3, 1, tzinfo=timezone.utc)
     ticker_data = {}
@@ -656,7 +656,7 @@ class TestMarketViewEquivalence:
 
     def test_event_rate_same_result(self, synthetic_data):
         """Same P(YES) from MarketView and framework View."""
-        from market_view import MarketView
+        from trading.market_view import MarketView
 
         obs, classifications, as_of = synthetic_data
 
@@ -695,7 +695,7 @@ class TestMarketViewEquivalence:
 
     def test_classification_same_result(self, synthetic_data):
         """Same classification from MarketView and framework View."""
-        from market_view import MarketView
+        from trading.market_view import MarketView
 
         obs, classifications, as_of = synthetic_data
 
@@ -719,7 +719,7 @@ class TestMarketViewEquivalence:
 
     def test_unknown_series_both_none(self, synthetic_data):
         """Both return None for unknown series."""
-        from market_view import MarketView
+        from trading.market_view import MarketView
 
         obs, classifications, as_of = synthetic_data
 
@@ -742,7 +742,7 @@ class TestMarketViewEquivalence:
 
     def test_multiple_query_points(self, synthetic_data):
         """Equivalence holds across different hours and prices."""
-        from market_view import MarketView
+        from trading.market_view import MarketView
 
         obs, classifications, as_of = synthetic_data
 
@@ -778,7 +778,7 @@ class TestMarketViewEquivalence:
 
     def test_temporal_filtering_equivalence(self, synthetic_data):
         """Both filter the same observations for a given as_of."""
-        from market_view import MarketView
+        from trading.market_view import MarketView
 
         # Create observations with two different settled_at dates
         early_obs = make_observations(

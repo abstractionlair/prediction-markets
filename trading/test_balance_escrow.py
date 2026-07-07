@@ -14,7 +14,7 @@ import sys
 import time
 import uuid
 
-from kalshi_client import KalshiClient
+from trading.kalshi_client import KalshiClient
 
 
 def main():

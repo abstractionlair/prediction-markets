@@ -17,7 +17,7 @@ import math
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
-from strategy import BLOCKED_SERIES, DEFAULT_PARAMS
+from trading.strategy import BLOCKED_SERIES, DEFAULT_PARAMS
 
 
 MAX_CAPITAL_PER_ORDER_CENTS = 400

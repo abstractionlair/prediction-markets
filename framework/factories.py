@@ -65,7 +65,7 @@ class EventRateFactory:
 
     def calibrate(self, data: dict[str, Any],
                   dependencies: dict | None = None) -> Any:
-        from event_rate import EventRateEstimator
+        from trading.event_rate import EventRateEstimator
         estimator = EventRateEstimator()
         estimator.set_classifications(data['classifications'])
         estimator.calibrate(data['observations'],
@@ -147,7 +147,7 @@ class FillRateFactory:
 
     def calibrate(self, data: dict[str, Any],
                   dependencies: dict | None = None) -> Any:
-        from fill_rate import FillRateEstimator
+        from trading.fill_rate import FillRateEstimator
         estimator = FillRateEstimator()
         estimator.calibrate(data['fill_data'],
                             n_price_steps=self._n_price_steps)

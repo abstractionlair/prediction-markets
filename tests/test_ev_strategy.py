@@ -1,7 +1,7 @@
 """Tests for ev_strategy.py — EV computation and strategy logic."""
 
-from ev_strategy import compute_trade_ev, EVStrategy, EVOpportunity, MAX_CAPITAL_PER_ORDER_CENTS
-from flow_model import FlowCDF, FlowModel
+from trading.ev_strategy import compute_trade_ev, EVStrategy, EVOpportunity, MAX_CAPITAL_PER_ORDER_CENTS
+from trading.flow_model import FlowCDF, FlowModel
 
 
 class TestComputeTradeEV:
@@ -155,7 +155,7 @@ class _FakeView:
         return self._classifications.get(series)
 
     def cost(self, price_cents, contracts, is_maker=True):
-        from cost_model import KALSHI_COSTS
+        from trading.cost_model import KALSHI_COSTS
         if is_maker:
             return KALSHI_COSTS.maker_fee(price_cents, contracts)
         return KALSHI_COSTS.taker_fee(price_cents, contracts)

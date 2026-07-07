@@ -1,7 +1,7 @@
 """Tests for trading/cost_model.py."""
 
-from cost_model import CostModel, KALSHI_COSTS
-from strategy import maker_fee
+from trading.cost_model import CostModel, KALSHI_COSTS
+from trading.strategy import maker_fee
 
 
 class TestCostModel:

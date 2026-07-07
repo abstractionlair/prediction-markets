@@ -1,6 +1,6 @@
 """Tests for trading/buckets.py — shared bucketing and smoothing."""
 
-from buckets import fill_time_bucket, price_bucket, smooth_time_buckets
+from trading.buckets import fill_time_bucket, price_bucket, smooth_time_buckets
 
 
 class TestPriceBucket:

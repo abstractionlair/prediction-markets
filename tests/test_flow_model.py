@@ -13,7 +13,7 @@ Tests with synthetic data only — no DB, no API. Covers:
 import math
 from datetime import datetime, timedelta, timezone
 
-from flow_model import (
+from trading.flow_model import (
     FlowCDF, FlowEstimate, FlowModel,
     compute_opposing_flow, compute_trailing_volume,
     _time_bucket, _trailing_vol_bucket, _log_linear_interp,
@@ -611,7 +611,7 @@ class TestSimulateFillFromTape:
     """Tests for replay's simulate_fill_from_tape function."""
 
     def test_basic_fill(self):
-        from replay import simulate_fill_from_tape
+        from trading.replay import simulate_fill_from_tape
         base = datetime(2026, 3, 20, 12, 0, 0, tzinfo=timezone.utc)
         settle = base + timedelta(hours=6)
         trades = {
@@ -627,7 +627,7 @@ class TestSimulateFillFromTape:
         assert fills[1][1] == 2   # second fill: only need 2 more (of 5 available)
 
     def test_no_matching_trades(self):
-        from replay import simulate_fill_from_tape
+        from trading.replay import simulate_fill_from_tape
         base = datetime(2026, 3, 20, 12, 0, 0, tzinfo=timezone.utc)
         settle = base + timedelta(hours=6)
         trades = {
@@ -639,7 +639,7 @@ class TestSimulateFillFromTape:
         assert fills == []
 
     def test_no_side_fill(self):
-        from replay import simulate_fill_from_tape
+        from trading.replay import simulate_fill_from_tape
         base = datetime(2026, 3, 20, 12, 0, 0, tzinfo=timezone.utc)
         settle = base + timedelta(hours=6)
         # NO buy at 8¢ → filled by YES taker at yes_price >= 0.92
@@ -653,7 +653,7 @@ class TestSimulateFillFromTape:
         assert fills[0][1] == 10  # capped at requested qty
 
     def test_missing_ticker(self):
-        from replay import simulate_fill_from_tape
+        from trading.replay import simulate_fill_from_tape
         base = datetime(2026, 3, 20, 12, 0, 0, tzinfo=timezone.utc)
         fills = simulate_fill_from_tape('MISSING', 'yes', 90, 5, base,
                                          base + timedelta(hours=1), {})

@@ -31,10 +31,10 @@ from pathlib import Path
 
 import psycopg2
 
-from kalshi_client import KalshiClient
-from ev_strategy import EVStrategy, EVOpportunity
-from view_bootstrap import build_view_factory_from_db
-from strategy import (
+from trading.kalshi_client import KalshiClient
+from trading.ev_strategy import EVStrategy, EVOpportunity
+from trading.view_bootstrap import build_view_factory_from_db
+from trading.strategy import (
     DEFAULT_PARAMS,
     Opportunity,
     TradePair,
@@ -42,8 +42,8 @@ from strategy import (
     maker_fee,
     optimal_quantity,
 )
-from flb_strategy import FLBStrategy
-from risk import RiskLimits, DrawdownMonitor, AlphaDecayMonitor, DEFAULT_RISK_LIMITS
+from trading.flb_strategy import FLBStrategy
+from trading.risk import RiskLimits, DrawdownMonitor, AlphaDecayMonitor, DEFAULT_RISK_LIMITS
 
 # ─── Configuration (from strategy.py canonical source) ──────────────
 # Import defaults so existing references work without changing every line.

@@ -13,7 +13,7 @@ Used by:
 from collections import defaultdict
 from datetime import datetime, timezone
 
-from strategy import (
+from trading.strategy import (
     BLOCKED_SERIES,
     DEFAULT_PARAMS,
     Opportunity,

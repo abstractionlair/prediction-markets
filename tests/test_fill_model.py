@@ -2,7 +2,7 @@
 
 from datetime import datetime, timezone, timedelta
 
-from fill_model import (
+from trading.fill_model import (
     FillModel, FillResult, Fill, CandleData, TimestampedCandle,
     DEFAULT_FILL_MODEL,
 )

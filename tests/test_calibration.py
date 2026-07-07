@@ -1,6 +1,6 @@
 """Tests for research/calibration.py — pure computation functions."""
 
-from calibration import (
+from research.calibration import (
     BucketStats,
     FavoriteStats,
     Observation,

@@ -9,14 +9,10 @@ Requires DB access — skip if unavailable.
 """
 
 import os
-import sys
 
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'trading'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'collectors'))
-
-from fill_model import FillModel, CandleData, TimestampedCandle
+from trading.fill_model import FillModel, CandleData, TimestampedCandle
 
 # ─── Database fixture ─────────────────────────────────────────────
 

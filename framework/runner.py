@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from typing import Any, Protocol, TYPE_CHECKING, runtime_checkable
 
 if TYPE_CHECKING:
-    from track_record import TrackRecord
+    from trading.track_record import TrackRecord
 
 
 # ── Protocols ────────────────────────────────────────────────
@@ -145,7 +145,7 @@ class Runner:
             TrackRecord with independently cost-verified trades.
         """
         # Deferred import: framework/ doesn't depend on trading/ at import time
-        from track_record import TradeRecord, TrackRecord
+        from trading.track_record import TradeRecord, TrackRecord
 
         if fill_simulator is None:
             fill_simulator = InstantFillSimulator()

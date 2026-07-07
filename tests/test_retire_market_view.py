@@ -16,7 +16,7 @@ from framework.factories import (
 from framework.feature import FeatureRegistry, PreloadedFeature
 from framework.view import View
 from framework.view_factory import ViewFactory
-from ev_strategy import EVStrategy, compute_trade_ev
+from trading.ev_strategy import EVStrategy, compute_trade_ev
 
 
 # ── Synthetic data for tests ─────────────────────────────────────
@@ -80,7 +80,7 @@ def _make_fill_data(as_of=None):
     """
     if as_of is None:
         as_of = datetime(2026, 4, 1, tzinfo=timezone.utc)
-    from fill_model import CandleData
+    from trading.fill_model import CandleData
     fill_data = {}
     for i in range(50):
         settled_at = datetime(2026, 1, 1 + (i % 28), tzinfo=timezone.utc)
@@ -174,14 +174,14 @@ class TestPreloadedFeature:
 
 class TestBuildViewFactory:
     def test_returns_view_factory(self):
-        from view_bootstrap import build_view_factory
+        from trading.view_bootstrap import build_view_factory
         obs = _make_observations()
         classifications = _make_classifications()
         factory = build_view_factory(obs, classifications)
         assert isinstance(factory, ViewFactory)
 
     def test_builds_view(self):
-        from view_bootstrap import build_view_factory
+        from trading.view_bootstrap import build_view_factory
         obs = _make_observations()
         classifications = _make_classifications()
         factory = build_view_factory(obs, classifications)
@@ -189,7 +189,7 @@ class TestBuildViewFactory:
         assert isinstance(view, View)
 
     def test_view_has_event_rate(self):
-        from view_bootstrap import build_view_factory
+        from trading.view_bootstrap import build_view_factory
         obs = _make_observations()
         classifications = _make_classifications()
         factory = build_view_factory(obs, classifications)
@@ -201,7 +201,7 @@ class TestBuildViewFactory:
         assert n > 0
 
     def test_view_has_classification(self):
-        from view_bootstrap import build_view_factory
+        from trading.view_bootstrap import build_view_factory
         obs = _make_observations()
         classifications = _make_classifications()
         factory = build_view_factory(obs, classifications)
@@ -211,7 +211,7 @@ class TestBuildViewFactory:
         assert view.classification('UNKNOWN') is None
 
     def test_view_has_cost(self):
-        from view_bootstrap import build_view_factory
+        from trading.view_bootstrap import build_view_factory
         obs = _make_observations()
         classifications = _make_classifications()
         factory = build_view_factory(obs, classifications)
@@ -220,7 +220,7 @@ class TestBuildViewFactory:
         assert fee > 0
 
     def test_view_has_fill_probability(self):
-        from view_bootstrap import build_view_factory
+        from trading.view_bootstrap import build_view_factory
         obs = _make_observations()
         classifications = _make_classifications()
         fill_data = _make_fill_data()
@@ -240,7 +240,7 @@ class TestBuildViewFactory:
 
     def test_no_fill_data_returns_none(self):
         """Without fill_data, fill_probability returns None."""
-        from view_bootstrap import build_view_factory
+        from trading.view_bootstrap import build_view_factory
         obs = _make_observations()
         classifications = _make_classifications()
         factory = build_view_factory(obs, classifications)  # no fill_data
@@ -259,7 +259,7 @@ class TestBuildViewFactory:
 
     def test_temporal_filtering(self):
         """View built at different as_of dates sees different data."""
-        from view_bootstrap import build_view_factory
+        from trading.view_bootstrap import build_view_factory
         obs = _make_observations()
         classifications = _make_classifications()
         factory = build_view_factory(obs, classifications)
@@ -451,13 +451,13 @@ class TestMarketViewCompat:
 
     def test_fill_probability_bridge(self):
         """MarketView.fill_probability delegates to fill_rates."""
-        from market_view import MarketView
+        from trading.market_view import MarketView
         assert hasattr(MarketView, 'fill_probability')
         assert hasattr(MarketView, 'cost')
 
     def test_cost_bridge(self):
         """MarketView.cost delegates to CostModel."""
-        from market_view import MarketView
+        from trading.market_view import MarketView
         assert hasattr(MarketView, 'cost')
 
 
@@ -475,8 +475,8 @@ class TestViewMarketViewParity:
 
     def _build_both(self):
         """Build a MarketView and a framework View from the same data."""
-        from market_view import MarketView
-        from view_bootstrap import build_view_factory
+        from trading.market_view import MarketView
+        from trading.view_bootstrap import build_view_factory
 
         as_of = datetime(2026, 4, 1, tzinfo=timezone.utc)
         observations = _make_observations(n=200, as_of=as_of)

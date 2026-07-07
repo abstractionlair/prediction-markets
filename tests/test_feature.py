@@ -304,7 +304,7 @@ class TestObservationsFeatureDB:
 
     def test_compatible_with_event_rate_estimator(self):
         """Observations can be passed to EventRateEstimator.calibrate()."""
-        from event_rate import EventRateEstimator
+        from trading.event_rate import EventRateEstimator
 
         feature = ObservationsFeature(self.conn_factory)
         observations = feature.query(datetime(2026, 2, 1, tzinfo=timezone.utc))

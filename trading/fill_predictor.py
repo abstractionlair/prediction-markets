@@ -22,7 +22,7 @@ from pathlib import Path
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier
 
-from flow_model import compute_opposing_flow
+from trading.flow_model import compute_opposing_flow
 
 
 # ── Feature engineering ──────────────────────────────────────────────

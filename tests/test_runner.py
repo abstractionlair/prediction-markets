@@ -22,7 +22,7 @@ from framework.runner import (
     _recalibration_boundary,
     _did_win,
 )
-from track_record import TradeRecord, TrackRecord
+from trading.track_record import TradeRecord, TrackRecord
 
 
 # ── Test helpers ─────────────────────────────────────────────
@@ -974,7 +974,7 @@ class TestReplayConsistency:
 
     def test_winning_yes_matches_replay(self):
         """Winning YES trade: Runner matches replay.py field-for-field."""
-        from cost_model import CostModel
+        from trading.cost_model import CostModel
         costs = CostModel()
 
         placed_at = T0
@@ -1008,7 +1008,7 @@ class TestReplayConsistency:
 
     def test_losing_no_matches_replay(self):
         """Losing NO trade: Runner matches replay.py field-for-field."""
-        from cost_model import CostModel
+        from trading.cost_model import CostModel
         costs = CostModel()
 
         placed_at = T0
@@ -1040,7 +1040,7 @@ class TestReplayConsistency:
 
     def test_end_to_end_single_trade_matches_replay(self):
         """Full Runner replay produces same TradeRecord as replay.py formula."""
-        from cost_model import CostModel
+        from trading.cost_model import CostModel
         costs = CostModel()
 
         placed_at = T0  # order placed in first period

@@ -8,7 +8,7 @@ functions from strategy.py.
 
 from dataclasses import dataclass
 
-from strategy import maker_fee as _maker_fee, taker_fee as _taker_fee
+from trading.strategy import maker_fee as _maker_fee, taker_fee as _taker_fee
 
 
 @dataclass(frozen=True)

@@ -6,8 +6,8 @@ configured values.
 
 from datetime import datetime, timezone, timedelta
 
-from flb_strategy import FLBStrategy
-from strategy import TradingParams
+from trading.flb_strategy import FLBStrategy
+from trading.strategy import TradingParams
 
 
 # ─── Fake EdgeLookup ──────────────────────────────────────────────

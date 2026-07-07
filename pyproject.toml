@@ -21,8 +21,17 @@ dev = [
     "ruff>=0.1.0",
 ]
 
-[tool.setuptools]
-packages = []
+# Flat layout: the real packages live at the repo root. Explicit include
+# list so a pip install actually ships them (tests/, docs/, scripts/ stay
+# repo-only).
+[tool.setuptools.packages.find]
+include = [
+    "framework*",
+    "data*",
+    "trading*",
+    "research*",
+    "collectors*",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

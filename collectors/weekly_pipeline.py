@@ -90,7 +90,7 @@ def step_classify(conn, skip_scout: bool = False) -> dict:
     result = {"new_classifications": 0, "skipped": False, "error": None}
 
     try:
-        from market_scout import (
+        from collectors.market_scout import (
             get_all_series,
             get_classified_series,
             get_series_detail,
@@ -125,7 +125,7 @@ def step_classify(conn, skip_scout: bool = False) -> dict:
 
     # LLM classification
     try:
-        from market_scout import classify_llm_batch
+        from collectors.market_scout import classify_llm_batch
 
         log(f"LLM classification for {len(unclassified)} series...")
         batch_size = 5

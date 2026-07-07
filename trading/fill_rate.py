@@ -12,8 +12,8 @@ ticker data before passing it here.
 from collections import defaultdict
 from datetime import timezone
 
-from buckets import fill_time_bucket
-from fill_model import FillModel
+from trading.buckets import fill_time_bucket
+from trading.fill_model import FillModel
 
 
 class FillRateEstimator:

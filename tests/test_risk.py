@@ -4,7 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from risk import (
+from trading.risk import (
     RiskLimits,
     DEFAULT_RISK_LIMITS,
     DrawdownMonitor,
