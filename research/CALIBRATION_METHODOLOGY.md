@@ -41,7 +41,7 @@ Three sources, all providing YES-side bid/ask:
 
 All three use bid/ask midpoints. Finfeed (external, last-trade price only) is excluded — no bid/ask means no spread filter and different price semantics.
 
-Sources are merged into a single time series per market. A market may contribute observations from multiple sources at different times. The merge is a simple union sorted by time — no deduplication, since observations at different resolutions from different sources are genuinely different data points.
+Sources are merged with per-market deduplication by source priority (`_dedup_by_source` in `calibration.py`): for each ticker, only the highest-priority source that has data for it is kept — hourly candles (0) over snapshots (1) over daily candles (2) — and that ticker's observations from lower-priority sources are dropped. Each market therefore contributes observations from exactly one source, so overlapping source coverage cannot double-count a market.
 
 ## Spread Filter
 
@@ -86,13 +86,13 @@ Three dimensions of buckets:
 
 **Time-to-settlement (report mode):** [0-1h, 1-3h, 3-6h, 6-12h, 12-24h, 24h+]. Fixed buckets used for human-readable reports.
 
-**Time-to-settlement (adaptive, for trader):** Per `(generating_process, topic)` cell, observations are sorted by `hours_to_settlement` and equipartitioned into `k` buckets where `k = min(N // 200, 20)`. This gives ~200 observations per bucket (SE ≈ 2.1%) with up to 20 time buckets for dense cells. Cells with < 200 total observations are excluded.
+**Time-to-settlement (adaptive, for trader):** Per `(generating_process, topic, price_bucket)` cell, observations are sorted by `hours_to_settlement` and equipartitioned into `k` buckets where `k = min(n_markets // 30, 20)` (minimum 1), with `n_markets` the number of distinct markets in the cell. Cells with < 50 distinct markets are excluded. Thresholds are counted in **markets**, not raw observations, because each market contributes one averaged data point per bucket (avoiding pseudo-replication), making market count the effective N: SE ≈ sqrt(p(1-p)/n_markets), so ~30 markets per bucket gives SE ≈ 5.5% at p = 0.90. Constants: `MIN_MARKETS_PER_BUCKET = 30`, `MIN_TOTAL_MARKETS = 50`, `MAX_BUCKETS = 20` (`calibration.py`, `compute_event_rates`).
 
 Adaptive bucketing avoids the fixed-grid problem where dense cells (convergent_binary × entertainment_sports, 49K obs) waste resolution while sparse cells (hazard_process × other, 5 obs) have empty buckets.
 
-After computing raw per-bucket edges, a **5-bucket N-weighted moving average** smooths single-bucket outliers. This tames noise (e.g., an outlier in one bucket surrounded by stable neighbors) while preserving real trends (e.g., categories where the edge sign flips across horizons).
+After computing raw per-bucket event rates, a **5-bucket market-count-weighted moving average** smooths single-bucket outliers. This tames noise (e.g., an outlier in one bucket surrounded by stable neighbors) while preserving real trends (e.g., categories where the edge sign flips across horizons).
 
-Results are stored in `prediction_markets.calibration_edges` with both raw `edge` and `smoothed_edge` columns. The trader uses `smoothed_edge`.
+Results are stored in `prediction_markets.calibration_rates` with both raw `event_rate` and `smoothed_event_rate` columns. The trader uses `smoothed_event_rate`.
 
 **Category:** `generating_process`, `topic`, or `generating_process × topic` depending on the analysis. Also by individual series.
 
