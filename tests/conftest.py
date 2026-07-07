@@ -5,7 +5,26 @@ Tests import the project packages directly (``trading.*``, ``framework.*``,
 relying on sys.path manipulation here.
 """
 
+import os
+
+import pytest
+
 from trading.strategy import Opportunity, TradePair, edge_per_day
+
+
+def pytest_collection_modifyitems(config, items):
+    """Skip db-marked tests when no database DSN is configured.
+
+    Some DB fixtures connect unconditionally; without this hook a missing
+    CLAUDE_HUB_PG_DSN surfaces as setup ERRORs instead of skips, so a
+    default ``pytest`` run is red on any machine without the database.
+    """
+    if os.environ.get("CLAUDE_HUB_PG_DSN"):
+        return
+    skip_db = pytest.mark.skip(reason="CLAUDE_HUB_PG_DSN not set")
+    for item in items:
+        if "db" in item.keywords:
+            item.add_marker(skip_db)
 
 
 def make_opportunity(
