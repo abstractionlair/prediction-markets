@@ -188,7 +188,7 @@ For snapshot data, we also retain `bid` and `ask` separately for robustness anal
 | `cboe-collector.timer` | Daily 20:30 UTC | SPX options chain |
 | `fred-collector.timer` | Daily 06:00 UTC | 34 FRED series |
 | `coingecko-collector.timer` | Daily 07:00 UTC | 6 crypto assets |
-| `settled-downloader.timer` | Weekly Sun 08:00 UTC | Settled outcomes + pipeline |
+| `weekly-pipeline.timer` | Weekly Sun 08:00 UTC | Weekly pipeline: classify, settled outcomes, categories, rebuild |
 
 ## Memory Limits
 
