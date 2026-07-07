@@ -328,10 +328,10 @@ class TestEstimateFallback:
                              92, 0)
         assert est is not None
 
-    def test_level4_outcome_merged(self):
+    def test_level5_outcome_merged(self):
         """When only outcome-merged data exists, p_fill_won == p_fill_lost."""
         table = {}
-        table[('counting_process', 'ent_sports', '<3h', 'no', '*', '*')] = FlowCDF(
+        table[('counting_process', 'ent_sports', '<3h', 'no', '*', '*', '*')] = FlowCDF(
             thresholds=[1, 10, 50],
             exceedances=[0.80, 0.60, 0.30],
             n_observations=500, n_outcome=500,
@@ -342,10 +342,10 @@ class TestEstimateFallback:
         assert est is not None
         assert est.p_fill_won == est.p_fill_lost
 
-    def test_level5_side_merged(self):
+    def test_level6_side_merged(self):
         """Falls all the way to side-merged."""
         table = {}
-        table[('counting_process', 'ent_sports', '<3h', '*', '*', '*')] = FlowCDF(
+        table[('counting_process', 'ent_sports', '<3h', '*', '*', '*', '*')] = FlowCDF(
             thresholds=[1, 10], exceedances=[0.70, 0.50],
             n_observations=300, n_outcome=300,
         )
@@ -364,7 +364,7 @@ class TestEstimateFallback:
         """CDFs below MIN_COMBINED are skipped."""
         table = {}
         for outcome in ('won', 'lost'):
-            table[('gp', 'topic', '1-3h', 'no', '*', outcome)] = FlowCDF(
+            table[('gp', 'topic', '1-3h', 'no', '*', 90, outcome)] = FlowCDF(
                 thresholds=[1, 10], exceedances=[0.80, 0.50],
                 n_observations=100, n_outcome=50,  # below MIN_COMBINED=200
             )
@@ -374,16 +374,16 @@ class TestEstimateFallback:
     def test_asymmetric_outcome_count_falls_through(self):
         """If won has enough but lost doesn't, fall through to next level."""
         table = {}
-        table[('gp', 'topic', '1-3h', 'no', '*', 'won')] = FlowCDF(
+        table[('gp', 'topic', '1-3h', 'no', '*', 90, 'won')] = FlowCDF(
             thresholds=[1, 10], exceedances=[0.80, 0.50],
             n_observations=300, n_outcome=200,
         )
-        table[('gp', 'topic', '1-3h', 'no', '*', 'lost')] = FlowCDF(
+        table[('gp', 'topic', '1-3h', 'no', '*', 90, 'lost')] = FlowCDF(
             thresholds=[1, 10], exceedances=[0.85, 0.55],
             n_observations=300, n_outcome=30,  # below MIN_PER_OUTCOME=50
         )
-        # Level 4: outcome merged — should fall here
-        table[('gp', 'topic', '<3h', 'no', '*', '*')] = FlowCDF(
+        # Level 5: outcome merged — should fall here
+        table[('gp', 'topic', '<3h', 'no', '*', '*', '*')] = FlowCDF(
             thresholds=[1, 10], exceedances=[0.82, 0.52],
             n_observations=300, n_outcome=300,
         )
@@ -512,7 +512,7 @@ class TestCalibrate:
         model = FlowModel.calibrate(trades, settled, classifications)
         outcomes = set()
         for key in model.flow_table:
-            outcomes.add(key[5])  # outcome is 6th element
+            outcomes.add(key[6])  # outcome is 7th (last) element
         assert 'won' in outcomes
         assert 'lost' in outcomes
 

@@ -162,16 +162,16 @@ class _FakeView:
 
 
 def _make_test_flow_table():
-    """Flow table with data at level 4 (outcome merged) for testing."""
+    """Flow table with data at level 5 (outcome merged) for testing."""
     table = {}
     # Enough data at outcome-merged level for gp/topic/<3h/no
-    table[('gp', 'topic', '<3h', 'no', '*', '*')] = FlowCDF(
+    table[('gp', 'topic', '<3h', 'no', '*', '*', '*')] = FlowCDF(
         thresholds=[1, 2, 5, 10, 20, 50],
         exceedances=[0.90, 0.85, 0.75, 0.60, 0.45, 0.25],
         n_observations=1000, n_outcome=1000,
     )
     # YES side has lower fill rates
-    table[('gp', 'topic', '<3h', 'yes', '*', '*')] = FlowCDF(
+    table[('gp', 'topic', '<3h', 'yes', '*', '*', '*')] = FlowCDF(
         thresholds=[1, 2, 5, 10, 20, 50],
         exceedances=[0.80, 0.75, 0.60, 0.45, 0.30, 0.15],
         n_observations=1000, n_outcome=1000,

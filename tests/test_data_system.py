@@ -977,7 +977,8 @@ class TestSnapshotParsing:
         }
         row = _parse_snapshot("KXTEST-SNAP", orderbook, 5000, 1000)
         assert row is not None
-        ticker, ts, yes_bid, yes_ask, bid_depth, ask_depth, vol, oi, origin = row
+        (ticker, ts, yes_bid, yes_ask, bid_depth, ask_depth, vol, oi, origin,
+         yes_json, no_json) = row
         assert ticker == "KXTEST-SNAP"
         assert yes_bid == 85          # best yes bid
         assert yes_ask == 82          # 100 - 18 (best no bid)
@@ -986,6 +987,10 @@ class TestSnapshotParsing:
         assert vol == 5000
         assert oi == 1000
         assert origin == "live"
+        # JSONB level arrays round-trip the full orderbook
+        import json
+        assert json.loads(yes_json) == [[85, 100], [84, 200]]
+        assert json.loads(no_json) == [[18, 150], [17, 50]]
 
     def test_parse_snapshot_yes_only(self):
         """Orderbook with only yes levels."""
