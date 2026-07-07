@@ -4,7 +4,8 @@ A source-agnostic data ingestion framework, a PostgreSQL warehouse, and a
 quant consumer layer for prediction-market and macro-finance data. The
 distinguishing property of this codebase is not any particular strategy or
 result but the **temporal-integrity discipline** built into the framework:
-look-ahead bias is made structurally impossible, not merely discouraged.
+at the estimator/View interface, look-ahead bias is structurally prevented,
+not merely discouraged.
 
 This is **infrastructure**, not "a trading system." Strategies and models plug
 in through standard interfaces; the infrastructure enforces correctness
@@ -77,18 +78,26 @@ side channels. Estimators receive **pre-filtered data**, not the full dataset
 plus a cutoff date. An estimator cannot look ahead because it never sees
 future data.
 
-This makes look-ahead bias **structurally impossible** at the consumer
-interface: the operation that would produce it is not available. The same
-boundary applies in backtesting (expanding-window replay) and in production
-(`MarketView.from_db` with `as_of=now`).
+This makes look-ahead bias **structurally prevented at the estimator/View
+interface**: there, the operation that would produce it is not available.
+Enforcement is layered (see `framework/view.py`): feature availability times
+are *validated* at View construction, while `as_of` privacy and the
+no-direct-DB rule are *conventions* — Python has no access control, and code
+paths outside the View boundary (preloaded features passed without a filter,
+the live trader's direct calibration lookups) rely on that discipline rather
+than on structure. The same boundary applies in backtesting (expanding-window
+replay) and in production (`MarketView.from_db` with `as_of=now`).
 
 The framework extends this discipline to other classes of error:
 
 - **Cost realism** — every evaluation includes realistic transaction costs;
   the cost model is not optional in backtest or live paths.
-- **Validation before deployment** — models pass temporal-split validation
-  (train pre-cutoff, test post-cutoff) with a recorded gap metric;
-  strategies produce a `TrackRecord` via out-of-sample replay.
+- **Validation before deployment** — the framework defines a temporal-split
+  validation interface (train pre-cutoff, test post-cutoff, record the gap
+  metric), but `Runner.validate_estimator` is currently a stub raising
+  `NotImplementedError` (implementation planned for Chunk 8+, pending an
+  actuals-query interface). Strategies do produce a `TrackRecord` via
+  out-of-sample replay.
 - **Declared dependencies** — what data a model needs and what temporal
   constraints apply are declared and inspectable, not implicit in import
   chains.
@@ -114,7 +123,7 @@ framework/           Quant consumer layer (protocol-driven)
   feature.py         Feature abstraction (stored/cached/computed)
   view.py            View — capability boundary for consumers
   estimator.py       Estimator protocol
-  runner.py          Runner — replay / live / validation modes
+  runner.py          Runner — generic strategy replay (validation stub)
   calibration_store.py  Calibration artifact storage
 trading/             Strategies, replay engine, live trader, risk
 research/            Calibration methodology + analysis scripts
