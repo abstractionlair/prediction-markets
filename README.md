@@ -168,6 +168,19 @@ model iterations; the framework reforms documented in
 response to those findings. The value on offer here is the data pipeline and
 the temporal-integrity framework, not a validated edge.
 
+## Provenance
+
+The finance is mine: the no-arbitrage/replication framing for pricing and
+market-making on event contracts comes from my markets background, and it
+displaced the utility/preference framing the models defaulted to when I first
+posed the problem. GPT-5 formalized parts of a frame I brought to it. The
+engineering — collectors, the estimator framework, the replay machinery — is
+overwhelmingly model-written under my direction, across dozens of CLI sessions
+with roughly a nine-to-one ratio of agent actions to my turns and essentially
+none of it line-edited by me. My quality control runs through results rather
+than diffs: calibration against settled markets, backtests read skeptically
+(see above), and live P&L.
+
 ## License
 
 MIT — see `LICENSE`.
