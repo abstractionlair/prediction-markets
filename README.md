@@ -1,10 +1,10 @@
 # prediction-markets
 
-# Background and Motivation
+## Background and Motivation
 
-Despite what's said below, I have been writing and running (with trial-level money) a prediction markets trading system. It has even been profitable, though it is paused. Reviewing the methodology and estimates, probably with multiple models because that's my habit, poked some holes in the calibrations and we didn't have enough data yet to do them the right way. That was because the historical data I could load wasn't as rich as the data I could collect with regular capture or live or near-live markets and those jobs hadn't been running long enough. As-of this writing, I think I might so that project should get ressurected soon. The reason what's below isn't the entire system is that Claude told me I shouldn't give away my alpha. Which was a very kind, indirect compliment. I think that's optimistic, but I followed Claude's advice. How could I not when it was so nice?
+Despite what's said below, I have been writing and running (with trial-level money) a prediction markets trading system. It has even been profitable, though it is paused. Reviewing the methodology and estimates, probably with multiple models because that's my habit, poked some holes in the calibrations and we didn't have enough data yet to do them the right way. That was because the historical data I could load wasn't as rich as the data I could collect with regular capture of live or near-live markets and those jobs hadn't been running long enough. As of this writing, I think I might now have enough, so that project should get resurrected soon. The reason what's below isn't the entire system is that Claude told me I shouldn't give away my alpha. Which was a very kind, indirect compliment. I think that's optimistic, but I followed Claude's advice. How could I not when it was so nice?
 
-# Introduction
+## Introduction
 
 The details below were written by Claude based on reading the code, docs, and participation in the project.
 
